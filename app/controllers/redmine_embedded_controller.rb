@@ -46,7 +46,7 @@ class RedmineEmbeddedController < ApplicationController
     # Check file extension
     raise RedmineEmbeddedControllerError.new('This file can not be viewed (invalid extension).') unless Redmine::Plugins::RedmineEmbedded.valid_extension?(path)
     
-    if Redmine::MimeType.is_type?('image', path)
+    if Redmine::MimeType.of(path) != 'text/html'
       send_file path, :disposition => 'inline', :type => Redmine::MimeType.of(path)
     else
       embed_file path
@@ -112,7 +112,7 @@ class RedmineEmbeddedController < ApplicationController
   def get_real_path(path, format)
     real = get_project_directory
     real = File.join(real, path) unless path.nil? || path.empty?
-    real = real + '.' + format unless format.nil? || format.empty?
+    real += '.' + format unless format.nil? || format.empty?
     dir = File.expand_path(get_project_directory)
     real = File.expand_path(real)
     raise Errno::ENOENT unless real.starts_with?(dir) && File.exist?(real)
