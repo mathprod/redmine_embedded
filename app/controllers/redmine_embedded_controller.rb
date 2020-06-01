@@ -27,7 +27,7 @@ class RedmineEmbeddedController < ApplicationController
   
   unloadable
   layout 'base'
-  before_filter :find_project, :authorize
+  before_action :find_project, :authorize
   
   def index
     file = params[:request_path]
